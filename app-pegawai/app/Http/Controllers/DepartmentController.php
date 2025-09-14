@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Department;
 
 class DepartmentController extends Controller
 {
@@ -11,7 +12,8 @@ class DepartmentController extends Controller
      */
     public function index()
     {
-        //
+        $department = Department::all();
+        return $department;
     }
 
     /**
@@ -19,7 +21,7 @@ class DepartmentController extends Controller
      */
     public function create()
     {
-        //
+        // view form untuk create department
     }
 
     /**
@@ -27,7 +29,11 @@ class DepartmentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nama_departemen' => 'required|string|max:255',
+        ]);
+        Department::create($request->all());
+        return redirect()->route('departments.index');
     }
 
     /**
@@ -35,7 +41,8 @@ class DepartmentController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $department = Department::find($id);
+        return $department;
     }
 
     /**
@@ -43,7 +50,7 @@ class DepartmentController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        // view form untuk edit department
     }
 
     /**
@@ -51,14 +58,20 @@ class DepartmentController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'nama_departemen' => 'required|string|max:255',
+        ]);
+        $department = Department::find($id);
+        $department->update($request->all());
+        return redirect()->route('departments.index');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Department $department)
     {
-        //
+        $department->delete();
+        return redirect()->route('departments.index');
     }
 }

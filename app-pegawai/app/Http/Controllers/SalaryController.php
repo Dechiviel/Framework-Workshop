@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Salary;
 
 class SalaryController extends Controller
 {
@@ -11,7 +12,8 @@ class SalaryController extends Controller
      */
     public function index()
     {
-        //
+        $salary = Salary::all();
+        return $salary;
     }
 
     /**
@@ -19,7 +21,7 @@ class SalaryController extends Controller
      */
     public function create()
     {
-        //
+        // view form untuk create salary
     }
 
     /**
@@ -27,7 +29,15 @@ class SalaryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $salary = $request->validate([
+            'karyawan_id' => 'required|exists:employees,id',
+            'bulan'       => 'required|string|max:10',
+            'gaji_pokok'  => 'required|numeric',
+            'tunjangan'   => 'required|numeric',
+            'potongan'    => 'required|numeric',
+        ]);
+        Salary::create($salary);
+        return redirect()->route('salaries.index');
     }
 
     /**
@@ -35,7 +45,8 @@ class SalaryController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $salary = Salary::find($id);
+        return $salary;
     }
 
     /**
@@ -43,7 +54,7 @@ class SalaryController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        // view form untuk edit salary
     }
 
     /**
@@ -51,14 +62,24 @@ class SalaryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        request()->validate([
+            'karyawan_id' => 'required|exists:employees,id',
+            'bulan'       => 'required|string|max:10',
+            'gaji_pokok'  => 'required|numeric',
+            'tunjangan'   => 'required|numeric',
+            'potongan'    => 'required|numeric',
+        ]);
+        $salary = Salary::find($id);
+        $salary->update($request->all());
+        return redirect()->route('salaries.index');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Salary $salary)
     {
-        //
+        $salary->delete();
+        return redirect()->route('salaries.index');
     }
 }

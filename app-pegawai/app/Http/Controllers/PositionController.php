@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Position;
 
 class PositionController extends Controller
 {
@@ -11,7 +12,8 @@ class PositionController extends Controller
      */
     public function index()
     {
-        //
+        $positions = Position::all();
+        return $positions;
     }
 
     /**
@@ -19,7 +21,7 @@ class PositionController extends Controller
      */
     public function create()
     {
-        //
+        // view form untuk create position
     }
 
     /**
@@ -27,7 +29,12 @@ class PositionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $position = request()->validate([
+            'nama_jabatan' => 'required|string|max:100',
+            'gaji_pokok'   => 'required|numeric|min:0',
+        ]);
+        $position = Position::create($position);
+        return redirect()->route("positions.index");
     }
 
     /**
@@ -35,7 +42,8 @@ class PositionController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $position = Position::find($id);
+        return $position;
     }
 
     /**
@@ -43,7 +51,7 @@ class PositionController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        // view form untuk edit position
     }
 
     /**
@@ -51,14 +59,17 @@ class PositionController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $position = Position::find($id);
+        $position->update($request->all());
+        return redirect()->route("positions.index");
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Position $position)
     {
-        //
+        $position->delete();
+        return redirect()->route("positions.index");
     }
 }
